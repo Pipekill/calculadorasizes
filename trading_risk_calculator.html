@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Riesgo y Posición de Trading</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .input-group:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: scale(1);
+        }
+
+        .result-card h3 {
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-card .value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-card .unit {
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .info-panel {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .info-panel h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-panel h4::before {
+            content: "💡";
+            margin-right: 8px;
+        }
+
+        .formula {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 3px solid #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .shares-value {
+                font-size: 2.8em;
+            }
+            
+            .shares-label {
+                font-size: 0.9em;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .trade-type-indicator {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .trade-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .trade-badge.long {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .trade-badge.short {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .trade-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        /* DISPLAY PRINCIPAL PARA CANTIDAD DE ACCIONES */
+        .main-result {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .shares-display {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: 4px solid #ffffff;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
+            transform: scale(1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shares-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .shares-display:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(76, 175, 80, 0.5);
+        }
+
+        .shares-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .shares-value {
+            color: white;
+            font-size: 3.2em;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            margin: 8px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .shares-unit {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Efecto especial para operaciones SHORT */
+        .shares-display.short-mode {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            box-shadow: 0 15px 40px rgba(244, 67, 54, 0.4);
+        }
+
+        .shares-display.short-mode:hover {
+            box-shadow: 0 20px 50px rgba(244, 67, 54, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 CALCULADORA DE RIESGO</h1>
+        <p class="subtitle">Gestiona tu riesgo de trading de forma profesional</p>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="capital">💰 Capital Total ($)</label>
+                <input type="number" id="capital" value="2000" min="0" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="riesgo">⚠️ Riesgo por Operación (%)</label>
+                <input type="number" id="riesgo" value="1" min="0.1" max="100" step="0.1">
+            </div>
+            
+            <div class="input-group">
+                <label for="entrada">📈 Precio de Entrada ($)</label>
+                <input type="number" id="entrada" value="4" min="0" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="stopLoss">🛑 Stop Loss ($)</label>
+                <input type="number" id="stopLoss" value="3.50" min="0" step="0.01">
+            </div>
+        </div>
+
+        <div class="trade-type-indicator" id="tradeType">
+            <div class="trade-badge long">
+                📈 OPERACIÓN LONG
+            </div>
+        </div>
+        </div>
+
+        <!-- RESULTADO PRINCIPAL - CANTIDAD DE ACCIONES -->
+        <div class="main-result">
+            <div class="shares-display">
+                <div class="shares-label">🎯 CANTIDAD A COMPRAR</div>
+                <div class="shares-value" id="sharesMain">40</div>
+                <div class="shares-unit">ACCIONES</div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="result-card">
+                <h3>Riesgo en Dinero</h3>
+                <div class="value" id="riesgoDinero">$20</div>
+                <div class="unit">Máxima pérdida</div>
+            </div>
+            
+            <div class="result-card">
+                <h3>Riesgo por Acción</h3>
+                <div class="value" id="riesgoPorAccion">$0.50</div>
+                <div class="unit">Pérdida por share</div>
+            </div>
+            
+            <div class="result-card">
+                <h3>Inversión Total</h3>
+                <div class="value" id="inversionTotal">$160</div>
+                <div class="unit">Capital utilizado</div>
+            </div>
+        </div>
+
+        <div class="warning" id="warning">
+            ⚠️ Advertencia: El riesgo por acción es mayor al precio de entrada. Revisa tus valores.
+        </div>
+
+        <div class="info-panel">
+            <h4>Cómo funciona la calculadora:</h4>
+            <p><strong>1. Riesgo en Dinero:</strong> Porcentaje del capital que estás dispuesto a perder</p>
+            <div class="formula">Riesgo $ = Capital × (Riesgo % ÷ 100)</div>
+            
+            <p><strong>2. Riesgo por Acción:</strong> Diferencia entre entrada y stop loss (funciona para LONG y SHORT)</p>
+            <div class="formula">
+                LONG: Riesgo = Entrada - Stop Loss<br>
+                SHORT: Riesgo = Stop Loss - Entrada
+            </div>
+            
+            <p><strong>3. Cantidad de Acciones:</strong> Número óptimo de acciones a comprar</p>
+            <div class="formula">Shares = Riesgo $ ÷ Riesgo por Acción</div>
+            
+            <p><strong>4. Inversión Total:</strong> Capital total necesario para la operación</p>
+            <div class="formula">Inversión = Shares × Precio Entrada</div>
+        </div>
+    </div>
+
+    <script>
+        function calcular() {
+            // Obtener valores
+            const capital = parseFloat(document.getElementById('capital').value) || 0;
+            const riesgoPorcentaje = parseFloat(document.getElementById('riesgo').value) || 0;
+            const precioEntrada = parseFloat(document.getElementById('entrada').value) || 0;
+            const stopLoss = parseFloat(document.getElementById('stopLoss').value) || 0;
+
+            // Calcular riesgo en dinero
+            const riesgoDinero = capital * (riesgoPorcentaje / 100);
+
+            // Determinar tipo de operación y calcular riesgo por acción
+            let riesgoPorAccion;
+            let tipoOperacion;
+            const tradeBadge = document.querySelector('.trade-badge');
+            
+            if (precioEntrada > stopLoss) {
+                // Operación LONG
+                riesgoPorAccion = precioEntrada - stopLoss;
+                tipoOperacion = 'LONG';
+                tradeBadge.textContent = '📈 OPERACIÓN LONG';
+                tradeBadge.className = 'trade-badge long';
+            } else if (precioEntrada < stopLoss) {
+                // Operación SHORT
+                riesgoPorAccion = stopLoss - precioEntrada;
+                tipoOperacion = 'SHORT';
+                tradeBadge.textContent = '📉 OPERACIÓN SHORT';
+                tradeBadge.className = 'trade-badge short';
+            } else {
+                // Precios iguales
+                riesgoPorAccion = 0;
+                tipoOperacion = 'INDEFINIDO';
+                tradeBadge.textContent = '⚠️ PRECIOS IGUALES';
+                tradeBadge.className = 'trade-badge';
+                tradeBadge.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+            }
+
+            // Ocultar warning ya que ambos tipos de operación son válidos
+            const warning = document.getElementById('warning');
+            if (riesgoPorAccion <= 0 && precioEntrada !== stopLoss) {
+                warning.style.display = 'block';
+                warning.textContent = '⚠️ Verifica los precios de entrada y stop loss';
+            } else {
+                warning.style.display = 'none';
+            }
+
+            // Calcular cantidad de acciones
+            const cantidadAcciones = riesgoPorAccion > 0 ? Math.floor(riesgoDinero / riesgoPorAccion) : 0;
+
+            // Calcular inversión total
+            const inversionTotal = cantidadAcciones * precioEntrada;
+
+            // Actualizar resultados con animación
+            updateValue('riesgoDinero', `${riesgoDinero.toFixed(2)}`);
+            updateValue('riesgoPorAccion', `${riesgoPorAccion.toFixed(2)}`);
+            updateValue('cantidadAcciones', cantidadAcciones.toString());
+            updateValue('inversionTotal', `${inversionTotal.toFixed(2)}`);
+        }
+
+        function updateValue(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            element.style.transform = 'scale(1.1)';
+            element.style.transition = 'transform 0.2s ease';
+            
+            setTimeout(() => {
+                element.textContent = newValue;
+                element.style.transform = 'scale(1)';
+            }, 100);
+        }
+
+        // Event listeners para cálculo en tiempo real
+        document.addEventListener('DOMContentLoaded', function() {
+            // Asegurar que todos los elementos estén cargados antes de añadir listeners
+            const elements = ['capital', 'riesgo', 'entrada', 'stopLoss'];
+            
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('input', calcular);
+                } else {
+                    console.warn(`Elemento ${id} no encontrado`);
+                }
+            });
+
+            // Calcular inicial
+            calcular();
+
+            // Efectos visuales adicionales
+            document.querySelectorAll('.input-group input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    if (this.parentElement) {
+                        this.parentElement.style.transform = 'translateY(-2px)';
+                        this.parentElement.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.15)';
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (this.parentElement) {
+                        this.parentElement.style.transform = 'translateY(0)';
+                        this.parentElement.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
