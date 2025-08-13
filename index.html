@@ -93,6 +93,115 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
+        .trade-type-indicator {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .trade-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .trade-badge.long {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .trade-badge.short {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .trade-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        /* DISPLAY PRINCIPAL PARA CANTIDAD DE ACCIONES */
+        .main-result {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .shares-display {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: 4px solid #ffffff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
+            transform: scale(1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shares-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .shares-display:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 50px rgba(76, 175, 80, 0.5);
+        }
+
+        .shares-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .shares-value {
+            color: white;
+            font-size: 3.2em;
+            font-weight: 900;
+            line-height: 1;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            margin: 8px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .shares-unit {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Efecto especial para operaciones SHORT */
+        .shares-display.short-mode {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            box-shadow: 0 15px 40px rgba(244, 67, 54, 0.4);
+        }
+
+        .shares-display.short-mode:hover {
+            box-shadow: 0 20px 50px rgba(244, 67, 54, 0.5);
+        }
+
         .results-section {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -194,125 +303,6 @@
                 font-size: 0.9em;
             }
         }
-
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .trade-type-indicator {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .trade-badge {
-            display: inline-block;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 1.1em;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-        }
-
-        .trade-badge.long {
-            background: linear-gradient(135deg, #4caf50, #45a049);
-            color: white;
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .trade-badge.short {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            color: white;
-            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-        }
-
-        .trade-badge:hover {
-            transform: translateY(-2px);
-        }
-
-        /* DISPLAY PRINCIPAL PARA CANTIDAD DE ACCIONES */
-        .main-result {
-            margin: 30px 0;
-            text-align: center;
-        }
-
-        .shares-display {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            border: 4px solid #ffffff;
-            border-radius: 25px;
-            padding: 20px;
-            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
-            transform: scale(1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shares-display::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .shares-display:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 50px rgba(76, 175, 80, 0.5);
-        }
-
-        .shares-label {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1em;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .shares-value {
-            color: white;
-            font-size: 3.2em;
-            font-weight: 900;
-            line-height: 1;
-            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            margin: 8px 0;
-            position: relative;
-            z-index: 2;
-        }
-
-        .shares-unit {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9em;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* Efecto especial para operaciones SHORT */
-        .shares-display.short-mode {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            box-shadow: 0 15px 40px rgba(244, 67, 54, 0.4);
-        }
-
-        .shares-display.short-mode:hover {
-            box-shadow: 0 20px 50px rgba(244, 67, 54, 0.5);
-        }
     </style>
 </head>
 <body>
@@ -347,7 +337,6 @@
                 📈 OPERACIÓN LONG
             </div>
         </div>
-        </div>
 
         <!-- RESULTADO PRINCIPAL - CANTIDAD DE ACCIONES -->
         <div class="main-result">
@@ -379,7 +368,7 @@
         </div>
 
         <div class="warning" id="warning">
-            ⚠️ Advertencia: El riesgo por acción es mayor al precio de entrada. Revisa tus valores.
+            ⚠️ Advertencia: Verifica los precios de entrada y stop loss.
         </div>
 
         <div class="info-panel">
@@ -421,30 +410,38 @@
                 // Operación LONG
                 riesgoPorAccion = precioEntrada - stopLoss;
                 tipoOperacion = 'LONG';
-                tradeBadge.textContent = '📈 OPERACIÓN LONG';
-                tradeBadge.className = 'trade-badge long';
+                if (tradeBadge) {
+                    tradeBadge.textContent = '📈 OPERACIÓN LONG';
+                    tradeBadge.className = 'trade-badge long';
+                }
             } else if (precioEntrada < stopLoss) {
                 // Operación SHORT
                 riesgoPorAccion = stopLoss - precioEntrada;
                 tipoOperacion = 'SHORT';
-                tradeBadge.textContent = '📉 OPERACIÓN SHORT';
-                tradeBadge.className = 'trade-badge short';
+                if (tradeBadge) {
+                    tradeBadge.textContent = '📉 OPERACIÓN SHORT';
+                    tradeBadge.className = 'trade-badge short';
+                }
             } else {
                 // Precios iguales
                 riesgoPorAccion = 0;
                 tipoOperacion = 'INDEFINIDO';
-                tradeBadge.textContent = '⚠️ PRECIOS IGUALES';
-                tradeBadge.className = 'trade-badge';
-                tradeBadge.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+                if (tradeBadge) {
+                    tradeBadge.textContent = '⚠️ PRECIOS IGUALES';
+                    tradeBadge.className = 'trade-badge';
+                    tradeBadge.style.background = 'linear-gradient(135deg, #ff9800, #f57c00)';
+                }
             }
 
             // Ocultar warning ya que ambos tipos de operación son válidos
             const warning = document.getElementById('warning');
-            if (riesgoPorAccion <= 0 && precioEntrada !== stopLoss) {
-                warning.style.display = 'block';
-                warning.textContent = '⚠️ Verifica los precios de entrada y stop loss';
-            } else {
-                warning.style.display = 'none';
+            if (warning) {
+                if (riesgoPorAccion <= 0 && precioEntrada !== stopLoss) {
+                    warning.style.display = 'block';
+                    warning.textContent = '⚠️ Verifica los precios de entrada y stop loss';
+                } else {
+                    warning.style.display = 'none';
+                }
             }
 
             // Calcular cantidad de acciones
@@ -454,14 +451,48 @@
             const inversionTotal = cantidadAcciones * precioEntrada;
 
             // Actualizar resultados con animación
-            updateValue('riesgoDinero', `${riesgoDinero.toFixed(2)}`);
-            updateValue('riesgoPorAccion', `${riesgoPorAccion.toFixed(2)}`);
-            updateValue('cantidadAcciones', cantidadAcciones.toString());
-            updateValue('inversionTotal', `${inversionTotal.toFixed(2)}`);
+            updateValue('riesgoDinero', `$${riesgoDinero.toFixed(2)}`);
+            updateValue('riesgoPorAccion', `$${riesgoPorAccion.toFixed(2)}`);
+            updateValue('inversionTotal', `$${inversionTotal.toFixed(2)}`);
+            
+            // ACTUALIZAR EL DISPLAY PRINCIPAL DE ACCIONES
+            updateMainShares(cantidadAcciones, tipoOperacion);
+        }
+
+        function updateMainShares(cantidad, tipo) {
+            const sharesMain = document.getElementById('sharesMain');
+            const sharesDisplay = document.querySelector('.shares-display');
+            
+            // Verificar que los elementos existan antes de usarlos
+            if (!sharesMain || !sharesDisplay) {
+                return;
+            }
+            
+            // Efecto de pulsación
+            sharesDisplay.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                sharesMain.textContent = cantidad.toLocaleString();
+                
+                // Cambiar color según tipo de operación
+                if (tipo === 'SHORT') {
+                    sharesDisplay.classList.add('short-mode');
+                } else {
+                    sharesDisplay.classList.remove('short-mode');
+                }
+                
+                sharesDisplay.style.transform = 'scale(1)';
+            }, 150);
         }
 
         function updateValue(elementId, newValue) {
             const element = document.getElementById(elementId);
+            
+            // Verificar que el elemento existe
+            if (!element) {
+                return;
+            }
+            
             element.style.transform = 'scale(1.1)';
             element.style.transition = 'transform 0.2s ease';
             
@@ -480,8 +511,6 @@
                 const element = document.getElementById(id);
                 if (element) {
                     element.addEventListener('input', calcular);
-                } else {
-                    console.warn(`Elemento ${id} no encontrado`);
                 }
             });
 
